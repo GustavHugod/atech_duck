@@ -1,0 +1,9 @@
+# upstream clones (re-fetch with scripts/fetch_reference.sh) — 300 MB+, their own licences
+reference/*/
+!reference/README.md
+reference/press/
+out/*.stl
+out/*.glb
+.venv/
+firmware/.pio/
+__pycache__/

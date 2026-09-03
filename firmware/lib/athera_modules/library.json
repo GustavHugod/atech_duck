@@ -1,0 +1,13 @@
+{
+  "name": "athera_modules",
+  "version": "1.0.0-duck",
+  "description": "Atech/Athera module drivers (subset copied from ~/atech_code/backend/src/lib/athera_modules/esp32 on 2026-09-02)",
+  "frameworks": ["arduino"],
+  "platforms": ["espressif32"],
+  "build": {
+    "srcDir": ".",
+    "includeDir": ".",
+    "srcFilter": ["+<drivers/*.cpp>", "+<modules/**/*.cpp>"],
+    "flags": ["-Idrivers", "-Imodules/sensor", "-Imodules/distance", "-Imodules/audio", "-Imodules/led", "-Imodules/input", "-Imodules/robotics"]
+  }
+}

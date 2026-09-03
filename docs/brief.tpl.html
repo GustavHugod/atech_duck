@@ -1,0 +1,230 @@
+<title>Atech Duck</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F2F4F1; --ink:#1B2320; --muted:#5C6862; --rule:#D3D9D3; --panel:#E9ECE8;
+  --accent:#D9731A; --accent-ink:#8E4A0E; --green:#2F6B4A; --green-soft:#DDEBE2;
+  --code-bg:#E6EAE5;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151A17; --ink:#E6EBE6; --muted:#98A39C; --rule:#2A332E; --panel:#1C2320;
+    --accent:#F09A4A; --accent-ink:#F5B87C; --green:#6FBF8E; --green-soft:#1E3128;
+    --code-bg:#1F2724;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151A17; --ink:#E6EBE6; --muted:#98A39C; --rule:#2A332E; --panel:#1C2320;
+  --accent:#F09A4A; --accent-ink:#F5B87C; --green:#6FBF8E; --green-soft:#1E3128;
+  --code-bg:#1F2724;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Instrument Sans",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;font-size:16.5px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.page{max-width:1100px;margin:0 auto;padding:48px 28px 96px}
+.col{max-width:68ch}
+h1,h2,h3{font-family:"Bricolage Grotesque","Instrument Sans",system-ui,sans-serif;text-wrap:balance;margin:0}
+h1{font-size:clamp(40px,6vw,64px);font-weight:700;line-height:1;letter-spacing:-.02em}
+h2{font-size:26px;font-weight:700;margin:64px 0 16px;letter-spacing:-.01em}
+h3{font-size:18px;font-weight:600;margin:28px 0 8px}
+p{margin:0 0 14px}
+.eyebrow{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.lede{font-size:20px;line-height:1.45;color:var(--ink);margin:18px 0 0;max-width:60ch}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin:36px 0 0}
+.strip div{padding:14px 16px 14px 0}
+.strip div+div{border-left:1px solid var(--rule);padding-left:16px}
+.strip b{display:block;font-family:"Bricolage Grotesque",sans-serif;font-size:22px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.strip span{font-size:12.5px;color:var(--muted);letter-spacing:.02em}
+figure{margin:32px 0 0}
+figure img{width:100%;display:block;border:1px solid var(--rule);background:#fff}
+figcaption{font-size:13.5px;color:var(--muted);margin-top:8px}
+.verdict{border-left:3px solid var(--accent);padding:4px 0 4px 18px;margin:22px 0}
+.verdict p{margin:0 0 8px}
+ul{padding-left:20px;margin:0 0 14px}
+li{margin:0 0 6px}
+.tbl{overflow-x:auto;margin:14px 0 6px}
+table{border-collapse:collapse;width:100%;font-size:14.5px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;vertical-align:top;padding:9px 12px 9px 0;border-bottom:1px solid var(--rule)}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.mono,th.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:13px}
+.chip{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:2px 7px;border-radius:3px;background:var(--green-soft);color:var(--green);white-space:nowrap}
+.chip.warn{background:transparent;color:var(--accent-ink);border:1px solid var(--accent)}
+.routes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin:18px 0}
+.route{padding:18px 20px;background:var(--panel);border-top:2px solid var(--rule)}
+.route.pick{border-top-color:var(--accent)}
+.route h3{margin:0 0 6px;font-size:17px}
+.route .tag{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.route p{font-size:14.5px;margin:8px 0 0}
+pre{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12.5px;line-height:1.5;background:var(--code-bg);padding:16px 18px;overflow-x:auto;margin:14px 0;border-radius:4px}
+code{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.92em;background:var(--code-bg);padding:1px 5px;border-radius:3px}
+ol.q{padding-left:0;list-style:none;counter-reset:q;margin:14px 0}
+ol.q li{counter-increment:q;display:grid;grid-template-columns:44px 1fr;gap:10px;padding:12px 0;border-bottom:1px solid var(--rule);margin:0}
+ol.q li::before{content:"Q" counter(q);font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--accent-ink);padding-top:3px}
+ol.q li b{display:block;font-weight:600}
+ol.q li span{color:var(--muted);font-size:14.5px}
+.phases td:first-child{white-space:nowrap;font-weight:600}
+.small{font-size:13.5px;color:var(--muted)}
+a{color:var(--accent-ink);text-decoration-thickness:1px;text-underline-offset:3px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:640px){.page{padding:32px 18px 64px} h2{margin-top:48px}}
+</style>
+<div class="page">
+  <div class="col">
+    <div class="eyebrow">Concept brief · 2026-09-02 · ~/projects/atech_duck</div>
+    <h1>Atech Duck</h1>
+    <p class="lede">The Hugging Face / Pollen Microduck, rebuilt around the Atech 14-port board. Reference geometry gathered and measured, the route chosen, the firmware written and compiling. Nothing bought, printed or flashed yet.</p>
+  </div>
+  <div class="strip">
+    <div><b>272 mm · 737 g</b><span>Microduck, from the official MJCF</span></div>
+    <div><b>15 × XL330</b><span>Dynamixel bus servos, 14 in the policy</span></div>
+    <div><b>0 scans</b><span>none public; sim meshes are the geometry</span></div>
+    <div><b>14 × STS3215</b><span>the Feetech bus Atech already drives</span></div>
+    <div><b>39 % flash</b><span>firmware + 853 KB walking policy, compiles</span></div>
+  </div>
+
+  <figure>
+    <img src="{{IMG}}" alt="Render of the Microduck, the Open Duck Mini v2 and the Atech 14-port board at one scale">
+    <figcaption>Left to right at one scale: Atech 14-port board (60 × 120 mm), Open Duck Mini v2 (489 mm, 2107 g, 14 × STS3215), Microduck (272 mm, 737 g, 15 × XL330). Posed from each robot's standing keyframe by <code>scripts/assemble_mjcf.py</code>.</figcaption>
+  </figure>
+
+  <div class="col">
+    <h2>The short version</h2>
+    <div class="verdict">
+      <p><strong>Build the Open Duck Mini v2 body unchanged and make the Atech board its brain.</strong> Open Duck Mini v2 is the Microduck's open predecessor by the same engineer (Apache-2.0, 129 print files, BOM, assembly guide, trained walking policies). Its electronics are a Pi Zero 2 W, a Feetech bus adapter and a BNO055 IMU, which are exactly the three things the Atech board plus its Robot Arm and Motion Sensor modules replace.</p>
+      <p>The Microduck features it lacks come from Atech modules: the same 8 × 8 VL53L5CX time-of-flight sensor, NeoPixel eyes, a MAX98357A speaker, a microphone. Its existing walking policy runs on the ESP32-S3 as-is, because the body does not change.</p>
+    </div>
+    <p>A 1:1 Microduck with XL330 servos is the less Atech-shaped route: the board does not fit an 82 × 64 mm trunk, the servos need a new Dynamixel 2.0 driver, and the meshes are licensed non-commercial. It stays on the list as a stretch goal.</p>
+
+    <h2>What the Microduck is</h2>
+    <p>Everything below is from the sources fetched into <code>reference/</code>: Pollen's press kit, the two official repositories, and three community reverse-engineering projects.</p>
+  </div>
+  <div class="tbl"><table>
+    <tr><th>Item</th><th>Microduck</th><th>Source</th></tr>
+    <tr><td>Size, mass</td><td>25 cm tall, 14 cm wide, 737 g in the MJCF ("under 800 g")</td><td class="small">press kit, robot_walk.xml</td></tr>
+    <tr><td>Actuators</td><td>15 × Dynamixel XL330-M288-T, 18 g each, 288:1, calibrated ±0.96 N·m. 14 in the policy, the 15th moves the beak</td><td class="small">MJCF, teardown</td></tr>
+    <tr><td>Joints</td><td>per leg: hip yaw, hip roll, hip pitch, knee, ankle. Head: neck pitch, head pitch, head yaw, head roll</td><td class="small">MJCF</td></tr>
+    <tr><td>Link lengths</td><td class="mono">hip_yaw→roll 20.7 · roll→pitch 31.1 · hip→knee 42.2 · knee→ankle 49.4 mm</td><td class="small">docs/anatomy_microduck.md</td></tr>
+    <tr><td>Compute</td><td>Radxa Zero 3W (RK3566, four Cortex-A55, NPU), Armbian, Rust runtime</td><td class="small">teardown</td></tr>
+    <tr><td>Servo bus</td><td>Dynamixel Protocol 2.0 at 1 Mbps, TTL half-duplex. IDs: left leg 20–24, head 30–34, right leg 10–14. The body IMU is a bus slave at ID 200</td><td class="small">teardown</td></tr>
+    <tr><td>Sensors</td><td>VL53L5CX / L8CX 8 × 8 ToF at 15 Hz, LSM6DSV16X body IMU, head IMU, IMX219 camera, mic and speaker, two NFC antennas</td><td class="small">teardown, press kit</td></tr>
+    <tr><td>Battery</td><td>NP-F550 2600 mAh 2S, 6.6–8.2 V under load, about one hour, no fuel gauge</td><td class="small">teardown</td></tr>
+    <tr><td>Policies</td><td>9 ONNX files, 61 observations → 14 actions, MLP 61→512→256→128→14 with ELU, 198 k parameters, 50 Hz</td><td class="small">policies/, exporter</td></tr>
+    <tr><td>Fasteners</td><td>an M2 system: Ø2.2 clearance, Ø4.4 counterbore, Ø1.6 tapping</td><td class="small">fastener study</td></tr>
+    <tr><td>Licence</td><td>code Apache-2.0, <span class="chip warn">meshes CC BY-NC-SA</span>, hardware closed (no BOM, no PCB files)</td><td class="small">repositories</td></tr>
+  </table></div>
+
+  <div class="col">
+    <h2>What exists instead of a scan</h2>
+    <p>Nobody has published a scan and Pollen's Onshape is view-only. Three things stand in for it, and the first is better than a scan would be:</p>
+    <ul>
+      <li><strong>The official meshes with the MJCF.</strong> 43 STL files exported from Pollen's own CAD, plus every joint origin, axis, range, mass and inertia. The assembler poses them in the STAND keyframe and writes one STL and a coloured GLB.</li>
+      <li><strong>Community reconstructions.</strong> 70 parts already placed in world coordinates with a FreeCAD assembly, an electronics teardown read out of the Rust source, a fastener study, a combined GLB with the joint tree as JSON.</li>
+      <li><strong>Open Duck Mini v2.</strong> 129 printable parts, Onshape, BOM, wiring and assembly guides, its MJCF with a calibrated STS3215 actuator model, and its Raspberry Pi runtime.</li>
+    </ul>
+  </div>
+  <div class="tbl"><table>
+    <tr><th></th><th>Microduck</th><th>Open Duck Mini v2</th></tr>
+    <tr><td>Height, mass</td><td class="mono">272 mm · 737 g</td><td class="mono">489 mm · 2107 g</td></tr>
+    <tr><td>Servo</td><td>XL330, 18 g, 0.96 N·m</td><td>STS3215, 55 g, 3.35 N·m</td></tr>
+    <tr><td>Thigh, shin</td><td class="mono">42 · 49 mm</td><td class="mono">79 · 79 mm</td></tr>
+    <tr><td>Neck chain</td><td class="mono">50 · 24 · 23 mm</td><td class="mono">66 · 60 · 45 mm</td></tr>
+    <tr><td>Trunk, outer</td><td class="mono">≈ 82 × 64 × 36 mm</td><td class="mono">150 × 110 × 143 mm</td></tr>
+    <tr><td>Electronics</td><td>Radxa + HAT + IMU board</td><td>Pi Zero 2 W + bus adapter + BNO055</td></tr>
+    <tr><td>Licence</td><td><span class="chip warn">CC BY-NC-SA</span></td><td><span class="chip">Apache-2.0</span></td></tr>
+  </table></div>
+  <div class="col">
+    <p class="small">The community actuator study makes the point that settles the route: swapping XL330 for STS3215 is not a servo swap but a different robot, three times the servo mass with different cavities and a different actuator model. Open Duck Mini v2 is that robot, already designed and walking.</p>
+
+    <h2>Three routes</h2>
+  </div>
+  <div class="routes">
+    <div class="route pick">
+      <div class="tag">A · recommended</div>
+      <h3>Open Duck Mini v2 body, Atech brain</h3>
+      <p>Print the 129 parts as they are. 14 × STS3215 at 7.4 V on a 2S 18650 pack. The Atech board replaces Pi, adapter and IMU inside the trunk; ToF, eyes and speaker go into the head on short cables. The trained walking policy transfers. About €295 of non-Atech parts.</p>
+    </div>
+    <div class="route">
+      <div class="tag">B · stretch goal</div>
+      <h3>1:1 Microduck with XL330</h3>
+      <p>Print the official meshes, 15 × XL330-M288 at about €25 each, a new Dynamixel 2.0 driver on the same bus module, and a board that has to ride as a backpack on a 737 g robot. Every policy retrained. Non-commercial meshes.</p>
+    </div>
+    <div class="route">
+      <div class="tag">C · not pursued</div>
+      <h3>Atech-native duckling</h3>
+      <p>Two DC motor modules and a duck shell as the case. A rolling toy that carries the Atech modules well but is not a Microduck.</p>
+    </div>
+  </div>
+
+  <div class="col">
+    <h2>Route A in detail</h2>
+    <h3>Architecture</h3>
+  </div>
+<pre>2S 18650 pack ── BMS ──┬── 7.4 V ── STS3215 × 14  (one daisy chain, IDs 10-14 / 20-24 / 30-33)
+                       │                ▲ data, 3 wires
+                       └── 5 V UBEC ── USB-C ── Atech 14-port board (ESP32-S3)
+                                                  port 3   Robot Arm module = bus master
+                                                  port 1   IMU              port 2   ToF (head)
+                                                  port 7   eyes (head)      port 4   button
+                                                  port 5   feet L / R       port 6   antennas L / R
+                                                  port 13+14 speaker        port 9+10 mic (optional)</pre>
+  <div class="col"><h3>Port map</h3><p class="small">GPIO numbers from <code>backend/motherboard/board.yaml</code>; the same map is the build flags in <code>firmware/platformio.ini</code>.</p></div>
+  <div class="tbl"><table>
+    <tr><th>Port</th><th class="mono">Line A / B</th><th>Use</th></tr>
+    <tr><td>1</td><td class="mono">9 / 8</td><td>IMU SDA / SCL, hardware Wire</td></tr>
+    <tr><td>2</td><td class="mono">5 / 4</td><td>ToF SCL / SDA, Wire1</td></tr>
+    <tr><td>3</td><td class="mono">17 / 18</td><td>servo bus TX through 330 Ω / RX, Serial1 at 1 Mbps</td></tr>
+    <tr><td>4</td><td class="mono">16 / 15</td><td>button, spare</td></tr>
+    <tr><td>5</td><td class="mono">11 / 10</td><td>foot switch left / right, pull-up, closed = low</td></tr>
+    <tr><td>6</td><td class="mono">13 / 12</td><td>antenna servo left / right, 50 Hz PWM</td></tr>
+    <tr><td>7</td><td class="mono">6 / 7</td><td>NeoPixel eyes, both module revisions</td></tr>
+    <tr><td>9 + 10</td><td class="mono">40/41 · 1/2</td><td>microphone, optional</td></tr>
+    <tr><td>13 + 14</td><td class="mono">39/38 · 36/35</td><td>speaker LRCLK / BCLK / DIN</td></tr>
+    <tr><td>11</td><td class="mono">43 / 44</td><td>free</td></tr>
+  </table></div>
+
+  <div class="col">
+    <h3>Control contract</h3>
+    <p>The firmware speaks the Open Duck Mini v2 runtime's contract so its policies transfer without retraining. A 50 Hz loop, an observation of 101 values: gyro, accelerometer, seven commands (vx, vy, yaw rate, four head angles), joint angles minus the standing pose, joint velocities scaled by 0.05, the last three actions, the motor targets, two foot contacts and a gait phase with a 0.54 s period. The 14 actions become targets as standing pose plus 0.25 × action; the head joints follow the command directly. Servo P gain 32 on the legs, 8 on the head, 2 when the body tilts past 60° so the duck goes limp instead of fighting the floor.</p>
+    <p>The exported policy is a 101→512→256→128→14 MLP with a tanh head, 218 k parameters, 853 KB of float32 in flash. The C header matches onnxruntime to 6 × 10⁻⁷. One forward pass is about 220 k multiply-adds, expected at 1 to 3 ms on the ESP32-S3 against a 20 ms budget. The <code>BENCH</code> command measures it on a real board.</p>
+
+    <h3>What exists in the repository today</h3>
+  </div>
+  <div class="tbl"><table>
+    <tr><th>Path</th><th>What</th><th>Verified</th></tr>
+    <tr><td class="mono">reference/</td><td>8 upstream repositories and press photos, re-fetchable with one script</td><td>fetched, 573 MB</td></tr>
+    <tr><td class="mono">scripts/assemble_mjcf.py</td><td>MJCF → posed STL, GLB, anatomy table, JSON</td><td>ran on both ducks</td></tr>
+    <tr><td class="mono">docs/anatomy_*.md</td><td>joints, link lengths, masses per body</td><td>generated</td></tr>
+    <tr><td class="mono">firmware/</td><td>PlatformIO project: STS bus driver for N servos with SYNC READ and SYNC WRITE, MLP runner, OFF / STAND / POLICY / LIMP state machine, JSON serial protocol, Atech drivers copied in</td><td><span class="chip">compiles</span> RAM 8 %, flash 39 %. Never flashed, no hardware in the session</td></tr>
+    <tr><td class="mono">firmware/tools/onnx_to_header.py</td><td>ONNX MLP → C header, cross-checked against onnxruntime</td><td>both duck policies export</td></tr>
+    <tr><td class="mono">BOM.md</td><td>parts and prices, Atech modules listed by port</td><td>draft</td></tr>
+  </table></div>
+
+  <div class="col"><h2>Plan</h2><p class="small">Digital steps are done in the repository; the physical column is yours. Each phase has a gate that has to pass before the next print.</p></div>
+  <div class="tbl"><table class="phases">
+    <tr><th>Phase</th><th>Digital</th><th>Physical</th><th>Gate</th></tr>
+    <tr><td>P0 order</td><td>BOM.md</td><td>14 × STS3215 7.4 V, 2 × 18650 with holder and BMS, 5 V UBEC, switches, inserts</td><td>parts in hand</td></tr>
+    <tr><td>P1 bus bench</td><td><code>SCAN</code>, <code>STATUS</code>, <code>BENCH</code>, <code>J</code></td><td>one servo on the Robot Arm module, 7.4 V bench supply</td><td>servo answers, BENCH under 5 ms</td></tr>
+    <tr><td>P2 one leg</td><td>joint offsets in <code>duck_config.h</code></td><td>print one leg, about 10 parts, five servos</td><td>ranges match the anatomy table</td></tr>
+    <tr><td>P3 full body</td><td><code>STAND</code> ramp, fall guard</td><td>print the rest, wire the chain, IMU in the trunk</td><td>stands 60 s</td></tr>
+    <tr><td>P4 walk</td><td><code>POLICY</code>, IMU frame calibration</td><td>gamepad to <code>CMD</code> from a laptop</td><td>walks on a flat floor</td></tr>
+    <tr><td>P5 duck-ness</td><td>ToF theremin, eyes, quacks</td><td>head modules on cables</td><td>demo</td></tr>
+    <tr><td>P6 optional</td><td>retrain in Open Duck Playground, route B</td><td></td><td></td></tr>
+  </table></div>
+
+  <div class="col">
+    <h2>Questions for Gustav</h2>
+    <p class="small">The work continues on the bold assumption in each line until you answer.</p>
+    <ol class="q">
+      <li><div><b>Trunk fit</b><span>Does the 14-port board (60 × 120 × 7 mm plus about 20 mm of modules) go inside the Open Duck Mini v2 body, shared with two 18650 cells and three servos? Assumed yes, across the 150 mm width. Fallbacks: the 8-port board, or a backpack.</span></div></li>
+      <li><div><b>Mass of board and modules</b><span>Weigh them on the Atech scale. Above about 80 g the centre of mass moves enough to matter.</span></div></li>
+      <li><div><b>Servos</b><span>Buy 14 × STS3215 in the 7.4 V variant, about €196? The Feetech STS3032 is Microduck-sized but no open body exists for it.</span></div></li>
+      <li><div><b>IMU frame</b><span>The Atech IMU's axes versus the duck frame (x forward, y left, z up) and its mount rotation. A one-minute test once it is mounted.</span></div></li>
+      <li><div><b>Which port pair is the module's UART</b><span>board.yaml says ports 3 and 4; the Robot Arm driver notes say 10 and 11. Bench-check.</span></div></li>
+      <li><div><b>The beak servo</b><span>Dropped in v1; Open Duck Mini v2 has a static beak. Add later on ID 34.</span></div></li>
+      <li><div><b>Camera</b><span>Out of scope on a microcontroller. An ESP32-CAM in the head is the only cheap route.</span></div></li>
+      <li><div><b>Licensing intent</b><span>Personal build: anything goes. Atech product or marketing: stay on Open Duck Mini v2 (Apache-2.0) and do not ship the Microduck meshes.</span></div></li>
+    </ol>
+
+    <h2>Sources</h2>
+    <p class="small">Pollen Robotics press kit · <a href="https://github.com/pollen-robotics/microduck">pollen-robotics/microduck</a> · <a href="https://github.com/pollen-robotics/microduck_rl">microduck_rl</a> · <a href="https://github.com/fanhao375/microduck-replica">fanhao375/microduck-replica</a> (teardown, actuator study, fastener study) · <a href="https://github.com/lingzolabs/microduck-hardware-replica">lingzolabs/microduck-hardware-replica</a> · <a href="https://github.com/boris721/microduck-3d">boris721/microduck-3d</a> · <a href="https://github.com/apirrone/Open_Duck_Mini">apirrone/Open_Duck_Mini</a> with Playground and Runtime · TechCrunch and CNX Software launch coverage, 2026-08-27/28 · Atech <code>my_modules.yaml</code> and <code>board.yaml</code>.</p>
+  </div>
+</div>

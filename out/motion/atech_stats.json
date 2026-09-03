@@ -1,0 +1,94 @@
+{
+ "name": "atech",
+ "board_mass_kg": 0.06,
+ "board_pos": [
+  -0.06,
+  0.0,
+  0.075
+ ],
+ "duration_s": 19.0,
+ "control_hz": 50,
+ "sim_dt": 0.002,
+ "frames": 950,
+ "fell_at_s": null,
+ "final_height_m": 0.1653,
+ "distance_m": 0.274,
+ "torque_peak_Nm": {
+  "left_hip_yaw": 1.968,
+  "left_hip_roll": 2.792,
+  "left_hip_pitch": 2.846,
+  "left_knee": 2.764,
+  "left_ankle": 2.836,
+  "neck_pitch": 1.624,
+  "head_pitch": 1.517,
+  "head_yaw": 2.366,
+  "head_roll": 1.393,
+  "right_hip_yaw": 1.382,
+  "right_hip_roll": 2.595,
+  "right_hip_pitch": 2.286,
+  "right_knee": 3.23,
+  "right_ankle": 2.815
+ },
+ "torque_rms_Nm": {
+  "left_hip_yaw": 0.417,
+  "left_hip_roll": 0.664,
+  "left_hip_pitch": 0.741,
+  "left_knee": 1.211,
+  "left_ankle": 0.863,
+  "neck_pitch": 0.355,
+  "head_pitch": 0.512,
+  "head_yaw": 0.615,
+  "head_roll": 0.454,
+  "right_hip_yaw": 0.335,
+  "right_hip_roll": 0.639,
+  "right_hip_pitch": 0.744,
+  "right_knee": 1.429,
+  "right_ankle": 0.672
+ },
+ "torque_limit_Nm": 3.23,
+ "speeds": {
+  "stand": {
+   "vx": 0.0,
+   "vy": -0.002,
+   "wz": -0.002,
+   "height": 0.165
+  },
+  "walk forward 0.15 m/s": {
+   "vx": 0.091,
+   "vy": 0.007,
+   "wz": 0.004,
+   "height": 0.164
+  },
+  "turn 1.0 rad/s": {
+   "vx": 0.035,
+   "vy": -0.012,
+   "wz": 0.757,
+   "height": 0.163
+  },
+  "sidestep 0.20 m/s": {
+   "vx": -0.001,
+   "vy": 0.105,
+   "wz": 0.039,
+   "height": 0.164
+  },
+  "stand, look up-left": {
+   "vx": 0.0,
+   "vy": -0.0,
+   "wz": -0.0,
+   "height": 0.167
+  },
+  "walk backward 0.15 m/s": {
+   "vx": -0.039,
+   "vy": -0.018,
+   "wz": 0.088,
+   "height": 0.164
+  },
+  "stand (end)": {
+   "vx": 0.0,
+   "vy": -0.0,
+   "wz": 0.003,
+   "height": 0.165
+  }
+ },
+ "gait_period_steps": 27
+}

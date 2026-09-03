@@ -1,0 +1,275 @@
+<title>Atech Duck Motion</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#F2F4F1;--ink:#1B2320;--muted:#5C6862;--rule:#D3D9D3;--panel:#E9ECE8;--accent:#D9731A;--accent-ink:#8E4A0E;--green:#2F6B4A;--green-soft:#DDEBE2;--code-bg:#E6EAE5;--scene:#EDEFEA;--floor:#DDE2DC;--grid:#C9D0C8;--duck:#D9DCE0;--head:#E6E3DA}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#151A17;--ink:#E6EBE6;--muted:#98A39C;--rule:#2A332E;--panel:#1C2320;--accent:#F09A4A;--accent-ink:#F5B87C;--green:#6FBF8E;--green-soft:#1E3128;--code-bg:#1F2724;--scene:#1A201D;--floor:#232B27;--grid:#33403A;--duck:#AEB4B8;--head:#C9C5B8}}
+:root[data-theme="dark"]{--bg:#151A17;--ink:#E6EBE6;--muted:#98A39C;--rule:#2A332E;--panel:#1C2320;--accent:#F09A4A;--accent-ink:#F5B87C;--green:#6FBF8E;--green-soft:#1E3128;--code-bg:#1F2724;--scene:#1A201D;--floor:#232B27;--grid:#33403A;--duck:#AEB4B8;--head:#C9C5B8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Instrument Sans",system-ui,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.page{max-width:1240px;margin:0 auto;padding:28px 24px 72px}
+h1,h2,h3{font-family:"Bricolage Grotesque",sans-serif;text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,4.5vw,44px);font-weight:700;line-height:1.05;letter-spacing:-.02em}
+h2{font-size:22px;font-weight:700;margin:40px 0 12px}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.lede{color:var(--muted);max-width:70ch;margin:8px 0 18px}
+.stage{display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:stretch}
+@media (max-width:900px){.stage{grid-template-columns:1fr}}
+.view{position:relative;background:var(--scene);border:1px solid var(--rule);min-height:420px;height:60vh;max-height:640px;overflow:hidden}
+.view canvas{display:block;width:100%;height:100%}
+.hud{position:absolute;left:14px;top:12px;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink);pointer-events:none;line-height:1.6}
+.hud b{font-weight:500;color:var(--accent-ink)}
+.hint{position:absolute;right:14px;bottom:10px;font-size:11.5px;color:var(--muted);pointer-events:none}
+.side{display:flex;flex-direction:column;gap:12px}
+.card{background:var(--panel);padding:14px 16px;border-top:2px solid var(--rule)}
+.card h3{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 10px;font-family:"Instrument Sans",sans-serif}
+.kv{display:grid;grid-template-columns:1fr auto;gap:4px 12px;font-size:13.5px;font-variant-numeric:tabular-nums}
+.kv span:nth-child(2n){font-family:"JetBrains Mono",monospace;font-size:12.5px;text-align:right}
+.feet{display:flex;gap:8px;margin-top:6px}
+.foot{flex:1;text-align:center;font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:5px 0;border:1px solid var(--rule);color:var(--muted)}
+.foot.on{background:var(--green-soft);color:var(--green);border-color:transparent}
+.bar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-top:14px}
+button{font:inherit;font-weight:500;font-size:13.5px;padding:7px 14px;border:1px solid var(--rule);background:var(--panel);color:var(--ink);cursor:pointer;border-radius:3px}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+.seg button{border:0;border-radius:0;background:transparent}
+.seg button.on{background:var(--green-soft);color:var(--green)}
+label.opt{font-size:13px;color:var(--muted);display:inline-flex;gap:6px;align-items:center}
+.timeline{margin-top:10px;position:relative}
+.timeline input[type=range]{width:100%;margin:0;accent-color:var(--accent)}
+.segments{display:flex;height:22px;font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--muted);margin-top:4px}
+.segments div{border-left:1px solid var(--rule);padding:3px 0 0 6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.segments div.on{color:var(--accent-ink);border-left-color:var(--accent)}
+.chart{margin-top:22px;border:1px solid var(--rule);background:var(--panel);padding:12px 14px}
+.chart canvas{width:100%;height:220px;display:block}
+.chart .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--muted);margin-top:6px}
+.tbl{overflow-x:auto;margin-top:8px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;vertical-align:top;padding:7px 12px 7px 0;border-bottom:1px solid var(--rule)}
+th{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.n{font-family:"JetBrains Mono",monospace;font-size:12.5px}
+.chip{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:11px;padding:1px 6px;border-radius:3px;background:var(--green-soft);color:var(--green)}
+.chip.warn{background:transparent;color:var(--accent-ink);border:1px solid var(--accent)}
+.col{max-width:72ch}
+p{margin:0 0 12px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+<div class="page">
+  <div class="eyebrow">MuJoCo motion simulation · Open Duck Mini v2 body + Atech board · 50 Hz policy loop</div>
+  <h1>Atech Duck Motion</h1>
+  <p class="lede">The trained Open Duck Mini v2 walking policy running the full assembly in MuJoCo, recorded at 50 Hz: every body's pose, all 14 servo torques, foot contacts. Drag to orbit, wheel to zoom, scrub the timeline. Toggle between the stock body and the body with a 60 g Atech board in the trunk.</p>
+
+  <div class="stage">
+    <div class="view" id="view">
+      <div class="hud" id="hud"></div>
+      <div class="hint">drag · wheel · shift-drag pans</div>
+    </div>
+    <div class="side">
+      <div class="card"><h3>Live</h3>
+        <div class="kv" id="live"></div>
+        <div class="feet"><div class="foot" id="footL">L foot</div><div class="foot" id="footR">R foot</div></div>
+      </div>
+      <div class="card"><h3>Servo torque now</h3>
+        <div class="kv" id="torqueNow"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bar">
+    <button class="primary" id="play">Pause</button>
+    <div class="seg" id="variant"><button data-run="stock" class="on">Stock body</button><button data-run="atech">+ Atech board 60 g</button></div>
+    <label class="opt">speed <select id="speed"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
+    <label class="opt"><input type="checkbox" id="follow" checked> camera follows</label>
+    <label class="opt"><input type="checkbox" id="showBoard" checked> show board</label>
+    <label class="opt"><input type="checkbox" id="trail" checked> foot trail</label>
+  </div>
+  <div class="timeline">
+    <input type="range" id="scrub" min="0" max="100" value="0" step="1">
+    <div class="segments" id="segments"></div>
+  </div>
+
+  <div class="chart">
+    <h3 style="font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 8px;font-family:'Instrument Sans',sans-serif">Servo torque, whole run (N·m, limit 3.23)</h3>
+    <canvas id="chart"></canvas>
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <h2>What the simulation says</h2>
+  <div class="tbl"><table id="stats"></table></div>
+  <div class="col" id="notes"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/*__DATA__*/
+(function(){
+window.addEventListener('error', e => { const n = document.getElementById('notes'); if (n && !n.dataset.err) { n.dataset.err = 1; n.insertAdjacentHTML('afterbegin', '<p style="color:var(--accent-ink)">Script error: ' + e.message + '</p>'); } });
+if (typeof THREE === 'undefined') { document.getElementById('notes').innerHTML = '<p style="color:var(--accent-ink)">three.js did not load from cdnjs, so the replay cannot run. Reload with network access.</p>'; return; }
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const runs = DATA.runs, meshes = DATA.meshes;
+let runName = 'stock', run = runs[runName];
+const N = run.frames.length, dt = run.dt, nb = run.bodies.length;
+const bodyIndex = {}; run.bodies.forEach((b,i)=>bodyIndex[b]=i);
+
+// ---------- scene
+const view = document.getElementById('view');
+let renderer = null;
+try {
+  renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  view.appendChild(renderer.domElement);
+} catch (err) {
+  view.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--muted)">This browser could not create a WebGL context, so the 3D replay is unavailable. The timeline, readouts and torque chart below still work.<br><small>' + String(err.message||err) + '</small></div>');
+}
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38, 1, 0.01, 50);
+const hemi = new THREE.HemisphereLight(0xffffff, 0x8a9a8a, 0.75); scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xffffff, 0.9); sun.position.set(1.2, -1.6, 2.4); scene.add(sun);
+const fill = new THREE.DirectionalLight(0xffffff, 0.35); fill.position.set(-1.5, 1.0, 1.0); scene.add(fill);
+scene.up = new THREE.Vector3(0,0,1); camera.up.set(0,0,1);
+const floorMat = new THREE.MeshLambertMaterial({color: 0xffffff});
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(8,8), floorMat); scene.add(floor);
+const grid = new THREE.GridHelper(8, 80, 0x000000, 0x000000); grid.rotation.x = Math.PI/2; grid.position.z = 0.0005; scene.add(grid);
+const gridMat = grid.material;
+// origin marker (10 cm axes)
+const axes = new THREE.AxesHelper(0.1); scene.add(axes);
+
+function hexOf(name){ return new THREE.Color(css(name)); }
+function applyTheme(){
+  scene.background = hexOf('--scene');
+  floorMat.color = hexOf('--floor');
+  gridMat.color = hexOf('--grid'); gridMat.opacity = 0.6; gridMat.transparent = true;
+  for (const k in bodyMeshes){ const m = bodyMeshes[k]; if (m.userData.role==='duck') m.material.color = hexOf('--duck'); if (m.userData.role==='head') m.material.color = hexOf('--head'); }
+}
+const bodyMeshes = {};
+for (const name in meshes){
+  const md = meshes[name];
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(md.v, 3));
+  g.setIndex(md.f);
+  g.computeVertexNormals();
+  let mat, role='duck';
+  if (name==='atech_board'){ mat = new THREE.MeshStandardMaterial({color: new THREE.Color(css('--green')), roughness:0.6, metalness:0.1, side: THREE.DoubleSide}); role='board'; }
+  else { role = (name.indexOf('head')>=0 || name.indexOf('neck')>=0) ? 'head' : 'duck'; mat = new THREE.MeshStandardMaterial({color: 0xcccccc, roughness:0.75, metalness:0.05, flatShading:true, side: THREE.DoubleSide}); }
+  const mesh = new THREE.Mesh(g, mat); mesh.userData.role = role; mesh.userData.parent = md.parent || name;
+  scene.add(mesh); bodyMeshes[name] = mesh;
+}
+// foot trail
+const trailGeo = new THREE.BufferGeometry(); const trailPts = new Float32Array(N*3*2);
+trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPts, 3));
+const trailL = new THREE.Line(trailGeo, new THREE.LineBasicMaterial({color: new THREE.Color(css('--accent'))}));
+scene.add(trailL);
+applyTheme();
+if (window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+new MutationObserver(applyTheme).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+
+// ---------- orbit
+const orbit = {theta: -2.35, phi: 1.15, r: 1.35, target: new THREE.Vector3(0,0,0.18)};
+let drag=null;
+const el = renderer ? renderer.domElement : view;
+el.addEventListener('pointerdown', e=>{ drag={x:e.clientX,y:e.clientY,pan:e.shiftKey||e.button===2}; el.setPointerCapture(e.pointerId); });
+el.addEventListener('pointermove', e=>{ if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; drag.x=e.clientX; drag.y=e.clientY;
+  if (drag.pan){ const right = new THREE.Vector3(Math.cos(orbit.theta+Math.PI/2), Math.sin(orbit.theta+Math.PI/2), 0); orbit.target.addScaledVector(right, -dx*0.0015*orbit.r); orbit.target.z += dy*0.0015*orbit.r; document.getElementById('follow').checked=false; }
+  else { orbit.theta -= dx*0.006; orbit.phi = Math.max(0.12, Math.min(1.5, orbit.phi - dy*0.006)); } });
+el.addEventListener('pointerup', ()=>drag=null); el.addEventListener('pointercancel', ()=>drag=null);
+el.addEventListener('wheel', e=>{ e.preventDefault(); orbit.r = Math.max(0.35, Math.min(5, orbit.r*Math.exp(e.deltaY*0.0012))); }, {passive:false});
+el.addEventListener('contextmenu', e=>e.preventDefault());
+function updateCamera(){
+  const t = orbit.target;
+  camera.position.set(t.x + orbit.r*Math.cos(orbit.theta)*Math.cos(orbit.phi), t.y + orbit.r*Math.sin(orbit.theta)*Math.cos(orbit.phi), t.z + orbit.r*Math.sin(orbit.phi));
+  camera.lookAt(t);
+}
+function resize(){ const w=view.clientWidth, h=view.clientHeight; if (renderer) renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+window.addEventListener('resize', resize); resize();
+
+// ---------- playback
+let frame=0, playing=true, speed=1, acc=0, last=performance.now();
+const scrub=document.getElementById('scrub'); scrub.max = N-1;
+const hud=document.getElementById('hud'), live=document.getElementById('live'), tq=document.getElementById('torqueNow');
+const footL=document.getElementById('footL'), footR=document.getElementById('footR');
+const segEl=document.getElementById('segments');
+function buildSegments(){ segEl.innerHTML=''; const sch=run.schedule; const T=N*dt;
+  sch.forEach((s,i)=>{ const t1 = i+1<sch.length ? sch[i+1].t : T; const d=document.createElement('div'); d.style.width=((t1-s.t)/T*100)+'%'; d.textContent=s.label; d.dataset.t0=s.t; d.dataset.t1=t1; segEl.appendChild(d); }); }
+buildSegments();
+const q=new THREE.Quaternion(), p=new THREE.Vector3();
+function setFrame(i){
+  frame=i; const fr=run.frames[i];
+  for (const name in bodyMeshes){
+    const m=bodyMeshes[name]; const bi=bodyIndex[m.userData.parent]; if (bi===undefined){ m.visible=false; continue; }
+    const o=bi*7; p.set(fr[o],fr[o+1],fr[o+2]); q.set(fr[o+4],fr[o+5],fr[o+6],fr[o+3]);
+    m.position.copy(p); m.quaternion.copy(q);
+    if (name==='atech_board') m.visible = document.getElementById('showBoard').checked && runName==='atech';
+  }
+  const t=i*dt, b=run.base[i], c=run.cmd[i];
+  hud.innerHTML=`t <b>${t.toFixed(2)} s</b> &nbsp; ${run.label[i]}<br>cmd vx <b>${c[0].toFixed(2)}</b> vy <b>${c[1].toFixed(2)}</b> wz <b>${c[2].toFixed(2)}</b>`;
+  const yaw = Math.atan2(2*(fr[3]*fr[6]+fr[4]*fr[5]), 1-2*(fr[5]*fr[5]+fr[6]*fr[6]))*180/Math.PI;
+  live.innerHTML = `<span>body speed vx</span><span>${b[1].toFixed(3)} m/s</span><span>body speed vy</span><span>${b[2].toFixed(3)} m/s</span><span>trunk height</span><span>${(b[0]*1000).toFixed(0)} mm</span><span>heading</span><span>${yaw.toFixed(0)}°</span><span>position x, y</span><span>${fr[0].toFixed(2)}, ${fr[1].toFixed(2)} m</span>`;
+  footL.classList.toggle('on', run.feet[i][0]>0.5); footR.classList.toggle('on', run.feet[i][1]>0.5);
+  const tau=run.torques[i]; let h='';
+  run.actuators.forEach((a,k)=>{ const v=tau[k]; const warn=Math.abs(v)>2.6; h+=`<span>${a.replace(/_/g,' ')}</span><span style="${warn?'color:var(--accent-ink)':''}">${v.toFixed(2)}</span>`; }); tq.innerHTML=h;
+  scrub.value=i;
+  [...segEl.children].forEach(d=>d.classList.toggle('on', t>=+d.dataset.t0 && t<+d.dataset.t1));
+  // trail: left foot body position history
+  if (document.getElementById('trail').checked){ const fb=bodyIndex['foot_assembly'], fb2=bodyIndex['foot_assembly_2']; let n=0;
+    for (let k=0;k<=i;k+=2){ const f=run.frames[k]; trailPts[n*3]=f[fb*7]; trailPts[n*3+1]=f[fb*7+1]; trailPts[n*3+2]=0.002; n++; }
+    trailGeo.setDrawRange(0,n); trailGeo.attributes.position.needsUpdate=true; trailL.visible=true; } else trailL.visible=false;
+  if (document.getElementById('follow').checked){ orbit.target.x += (fr[0]-orbit.target.x)*0.08; orbit.target.y += (fr[1]-orbit.target.y)*0.08; orbit.target.z += (0.2-orbit.target.z)*0.08; }
+  drawMarker(i);
+}
+function loop(now){ requestAnimationFrame(loop); const el=(now-last)/1000; last=now;
+  if (playing && !reduced){ acc+=el*speed; while(acc>=dt){ acc-=dt; frame=(frame+1)%N; } setFrame(frame); }
+  updateCamera(); if (renderer) renderer.render(scene,camera); }
+const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (reduced) playing=false;
+document.getElementById('play').onclick=function(){ playing=!playing; this.textContent=playing?'Pause':'Play'; };
+document.getElementById('speed').onchange=function(){ speed=+this.value; };
+scrub.oninput=function(){ playing=false; document.getElementById('play').textContent='Play'; setFrame(+this.value); };
+document.querySelectorAll('#variant button').forEach(b=>b.onclick=function(){ document.querySelectorAll('#variant button').forEach(x=>x.classList.remove('on')); this.classList.add('on'); runName=this.dataset.run; run=runs[runName]; buildSegments(); drawChart(); setFrame(Math.min(frame, run.frames.length-1)); });
+
+// ---------- chart
+const cv=document.getElementById('chart'), ctx=cv.getContext('2d');
+const palette=['#D9731A','#2F6B4A','#4C6FB1','#B0483C','#8A7B2E','#6B4CA8','#2E8A8A','#A85C8F','#5C7A2E','#B5772E','#3D5C8A','#8A3D5C','#4C8A5C','#7A5C3D'];
+let chartW=0, chartH=0, marker=null;
+function drawChart(){
+  const dpr=Math.min(devicePixelRatio,2); chartW=cv.clientWidth; chartH=220; cv.width=chartW*dpr; cv.height=chartH*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,chartW,chartH);
+  const L=44,R=10,T=10,B=24, w=chartW-L-R, h=chartH-T-B, lim=3.23, ymax=3.6;
+  const ink=css('--ink'), muted=css('--muted'), rule=css('--rule');
+  ctx.strokeStyle=rule; ctx.lineWidth=1; ctx.font='11px JetBrains Mono, monospace'; ctx.fillStyle=muted; ctx.textAlign='right';
+  [0,1,2,3].forEach(v=>{ const y=T+h-(v/ymax)*h; ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(L+w,y); ctx.stroke(); ctx.fillText(v.toFixed(0),L-6,y+4); });
+  ctx.strokeStyle=css('--accent'); ctx.setLineDash([4,4]); const yl=T+h-(lim/ymax)*h; ctx.beginPath(); ctx.moveTo(L,yl); ctx.lineTo(L+w,yl); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle=css('--accent-ink'); ctx.textAlign='left'; ctx.fillText('STS3215 limit 3.23 N·m', L+6, yl-4);
+  const T_total=run.frames.length*dt; ctx.fillStyle=muted; ctx.textAlign='center';
+  for (let s=0;s<=T_total;s+=2){ const x=L+(s/T_total)*w; ctx.fillText(s+' s', x, T+h+16); }
+  run.actuators.forEach((a,k)=>{ ctx.strokeStyle=palette[k%palette.length]; ctx.lineWidth=1; ctx.globalAlpha=0.85; ctx.beginPath();
+    for (let i=0;i<run.frames.length;i++){ const x=L+(i/run.frames.length)*w, y=T+h-(Math.min(Math.abs(run.torques[i][k]),ymax)/ymax)*h; i?ctx.lineTo(x,y):ctx.moveTo(x,y); } ctx.stroke(); });
+  ctx.globalAlpha=1;
+  const lg=document.getElementById('legend'); lg.innerHTML=run.actuators.map((a,k)=>`<span><span style="display:inline-block;width:10px;height:3px;background:${palette[k%palette.length]};vertical-align:middle;margin-right:4px"></span>${a.replace(/_/g,' ')}</span>`).join('');
+  marker={L,w,T,h};
+}
+let markerCanvasState=null;
+function drawMarker(i){ if(!marker) return; if(!markerCanvasState){ drawChart(); markerCanvasState=ctx.getImageData(0,0,cv.width,cv.height); } ctx.putImageData(markerCanvasState,0,0);
+  const x=marker.L+(i/run.frames.length)*marker.w; ctx.strokeStyle=css('--ink'); ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(x,marker.T); ctx.lineTo(x,marker.T+marker.h); ctx.stroke(); }
+window.addEventListener('resize', ()=>{ markerCanvasState=null; drawChart(); });
+const _drawChart=drawChart; drawChart=function(){ _drawChart(); markerCanvasState=null; };
+
+// ---------- stats table
+function statsTable(){
+  const s1=runs.stock.stats, s2=runs.atech.stats; const rows=[];
+  const seg=Object.keys(s1.speeds);
+  let h='<tr><th>Segment (commanded)</th><th>Stock: vx / vy / wz</th><th>+ board: vx / vy / wz</th><th>Trunk height</th></tr>';
+  seg.forEach(k=>{ const a=s1.speeds[k], b=s2.speeds[k]||a; h+=`<tr><td>${k}</td><td class="n">${a.vx.toFixed(3)} / ${a.vy.toFixed(3)} m/s / ${a.wz.toFixed(2)} rad/s</td><td class="n">${b.vx.toFixed(3)} / ${b.vy.toFixed(3)} m/s / ${b.wz.toFixed(2)} rad/s</td><td class="n">${(a.height*1000).toFixed(0)} mm</td></tr>`; });
+  const kp=(s)=>Object.entries(s.torque_peak_Nm).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([k,v])=>`${k.replace(/_/g,' ')} ${v.toFixed(2)}`).join(', ');
+  const kr=(s)=>Object.entries(s.torque_rms_Nm).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,v])=>`${k.replace(/_/g,' ')} ${v.toFixed(2)}`).join(', ');
+  h+=`<tr><td>Fell over</td><td class="n">${s1.fell_at_s===null?'<span class="chip">no, '+s1.duration_s+' s</span>':'<span class="chip warn">at '+s1.fell_at_s+' s</span>'}</td><td class="n">${s2.fell_at_s===null?'<span class="chip">no, '+s2.duration_s+' s</span>':'<span class="chip warn">at '+s2.fell_at_s+' s</span>'}</td><td></td></tr>`;
+  h+=`<tr><td>Peak torque, top 4</td><td class="n">${kp(s1)}</td><td class="n">${kp(s2)}</td><td class="n">limit ${s1.torque_limit_Nm}</td></tr>`;
+  h+=`<tr><td>RMS torque, top 3</td><td class="n">${kr(s1)}</td><td class="n">${kr(s2)}</td><td></td></tr>`;
+  document.getElementById('stats').innerHTML=h;
+}
+statsTable();
+document.getElementById('notes').innerHTML = `
+<p>Setup: Open Duck Mini v2 MJCF from Open Duck Playground with its calibrated STS3215 actuator model (position servos, force range ±3.23 N·m), 2 ms physics step, 50 Hz control, policy <code>BEST_WALK_ONNX_2</code>, 101-value observation exactly as the robot runtime builds it, action scale 0.25, motor speed limit 5.24 rad/s. The Atech variant adds a 60 g box at (−60, 0, 75) mm in the trunk frame, merged into the trunk inertial (mass, centre of mass, parallel-axis inertia). Both the mass and the placement are assumptions until the board and modules are weighed and the trunk fit is checked.</p>
+<p>Reading it: the policy holds a dead zone, commands below about 0.1 m/s forward or 0.15 m/s sideways read as “stand”, which is why the schedule uses 0.15 / 0.20 / 1.0. Achieved speeds are well under the commanded ones, the same as the real Open Duck Mini v2. The knee servos run closest to the STS3215 limit during stepping; peaks touch the clip, so on hardware expect the knees to be the hot joints. Foot contacts are rendered from MuJoCo contact pairs with the floor.</p>`;
+drawChart(); setFrame(0); requestAnimationFrame(loop);
+})();
+</script>
