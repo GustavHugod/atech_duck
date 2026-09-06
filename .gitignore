@@ -7,3 +7,5 @@ out/*.glb
 .venv/
 firmware/.pio/
 __pycache__/
+.pio/
+.DS_Store
