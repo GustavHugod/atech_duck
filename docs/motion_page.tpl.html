@@ -78,6 +78,7 @@ p{margin:0 0 12px}
   <div class="bar">
     <button class="primary" id="play">Pause</button>
     <div class="seg" id="variant"><button data-run="stock" class="on">Stock body</button><button data-run="atech">+ Atech board 60 g</button></div>
+    <div class="seg" id="colours"><button data-c="duck" class="on">Duck colours</button><button data-c="cad">CAD colours</button><button data-c="grey">Grey</button></div>
     <label class="opt">speed <select id="speed"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
     <label class="opt"><input type="checkbox" id="follow" checked> camera follows</label>
     <label class="opt"><input type="checkbox" id="showBoard" checked> show board</label>
@@ -139,7 +140,7 @@ function applyTheme(){
   scene.background = hexOf('--scene');
   floorMat.color = hexOf('--floor');
   gridMat.color = hexOf('--grid'); gridMat.opacity = 0.6; gridMat.transparent = true;
-  for (const k in bodyMeshes){ const m = bodyMeshes[k]; if (m.userData.role==='duck') m.material.color = hexOf('--duck'); if (m.userData.role==='head') m.material.color = hexOf('--head'); }
+  if (typeof applyColours === 'function') applyColours();
 }
 const bodyMeshes = {};
 for (const name in meshes){
@@ -148,12 +149,60 @@ for (const name in meshes){
   g.setAttribute('position', new THREE.Float32BufferAttribute(md.v, 3));
   g.setIndex(md.f);
   g.computeVertexNormals();
-  let mat, role='duck';
-  if (name==='atech_board'){ mat = new THREE.MeshStandardMaterial({color: new THREE.Color(css('--green')), roughness:0.6, metalness:0.1, side: THREE.DoubleSide}); role='board'; }
-  else { role = (name.indexOf('head')>=0 || name.indexOf('neck')>=0) ? 'head' : 'duck'; mat = new THREE.MeshStandardMaterial({color: 0xcccccc, roughness:0.75, metalness:0.05, flatShading:true, side: THREE.DoubleSide}); }
-  const mesh = new THREE.Mesh(g, mat); mesh.userData.role = role; mesh.userData.parent = md.parent || name;
+  let role='duck', mats=[];
+  if (name==='atech_board'){
+    mats = [new THREE.MeshStandardMaterial({color: new THREE.Color(css('--green')), roughness:0.6, metalness:0.1, side: THREE.DoubleSide})]; role='board';
+  } else {
+    role = (name.indexOf('head')>=0 || name.indexOf('neck')>=0) ? 'head' : 'duck';
+    // Faces arrive in part order with one CAD colour per face; group consecutive faces by colour
+    // so every part gets its own material (duck / CAD / grey schemes below).
+    const nf = md.f.length/3, groups=[]; let key=null;
+    for (let i=0;i<nf;i++){
+      const k = md.c.length ? md.c[i*3]+','+md.c[i*3+1]+','+md.c[i*3+2] : 'x';
+      if (k!==key){ key=k; groups.push({key:k, start:i*3, count:0}); }
+      groups[groups.length-1].count += 3;
+    }
+    groups.forEach((gr,i)=>{ g.addGroup(gr.start, gr.count, i);
+      mats.push(new THREE.MeshStandardMaterial({color: 0xcccccc, roughness:0.75, metalness:0.05, flatShading:true, side: THREE.DoubleSide, userData:{key:gr.key}})); });
+  }
+  const mesh = new THREE.Mesh(g, mats.length===1 ? mats[0] : mats); mesh.userData.role = role; mesh.userData.parent = md.parent || name;
   scene.add(mesh); bodyMeshes[name] = mesh;
 }
+// ---------- colour schemes (keys = CAD rgb of the Open Duck Mini v2 export, robot_motors.xml)
+const DUCK_COLOURS = {
+  '0.914,0.914,0.914': 0xF5C518,  // printed shells: body front/back/middle, head, caches
+  '0.902,0.902,0.902': 0xF7D65A,  // roll_motor_top, power switch
+  '0.647,0.647,0.647': 0xF39C2B,  // roll_motor_bottom, holder, leg spacers, head_yaw_to_roll, antennas
+  '0.91,0.569,0.165':  0xE0503C,  // left/right roll_to_pitch
+  '0.976,0.714,0.004': 0xF06A1C,  // feet (top/side), antenna holders
+  '0.302,0.294,0.275': 0x4A3B32,  // foot soles (PLA + TPU)
+  '0.62,0.667,0.702':  0x2E3440,  // servo horns (drive / passive palonier)
+  '0.22,0.22,0.22':    0x1F2328,  // knee-to-ankle and neck sheets
+  '0.176,0.176,0.176': 0x3B4252,  // trunk top / bottom
+  '0.4,0.4,0.4':       0x3B4252,  // head_pitch_to_yaw
+  '0.412,0.412,0.412': 0x3B4252,  // head bottom sheet
+  '0.502,0.502,0.502': 0x4C566A,  // head roll mount
+  '0.6,0.6,0.6':       0xB8C0CC,  // roll bearings
+  '0.231,0.376,0.702': 0x2F7BE0,  // battery lid, BMS, Pi Zero (replaced by the Atech board)
+  '0.431,0.667,0.976': 0x4AA8F5,  // SG90 antenna servos
+  '0.612,0.812,0.929': 0x7CC7F0,  // 18650 cells, BNO055, USB-C charger
+  '0.0,0.502,0.0':     'green',   // PCB -> Atech green
+};
+let colourScheme = 'duck';
+function applyColours(){
+  for (const k in bodyMeshes){
+    const m = bodyMeshes[k]; if (m.userData.role==='board'){ m.material.color = hexOf('--green'); continue; }
+    const mats = Array.isArray(m.material) ? m.material : [m.material];
+    for (const mat of mats){
+      const key = mat.userData.key || '';
+      if (colourScheme==='grey'){ mat.color = hexOf(m.userData.role==='head' ? '--head' : '--duck'); }
+      else if (colourScheme==='cad'){ const c = key.split(',').map(Number); mat.color = (c.length===3 && !isNaN(c[0])) ? new THREE.Color(c[0],c[1],c[2]) : new THREE.Color(0xcccccc); }
+      else { const v = DUCK_COLOURS[key]; mat.color = v==='green' ? hexOf('--green') : new THREE.Color(v===undefined ? 0xF5C518 : v); }
+    }
+  }
+}
+document.querySelectorAll('#colours button').forEach(b=>b.addEventListener('click', ()=>{
+  document.querySelectorAll('#colours button').forEach(x=>x.classList.toggle('on', x===b)); colourScheme=b.dataset.c; applyColours(); }));
 // foot trail
 const trailGeo = new THREE.BufferGeometry(); const trailPts = new Float32Array(N*3*2);
 trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPts, 3));

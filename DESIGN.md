@@ -133,7 +133,7 @@ rolling toy, not a Microduck. Not pursued.
 | port | GPIO A / B | use |
 |---|---|---|
 | 1 | 9 / 8 | IMU SDA / SCL (Wire) |
-| 2 | 5 / 4 | ToF SCL / SDA (Wire1) |
+| 2 | 5 / 4 | ToF SDA / SCL (Wire1) |
 | 3 | 17 / 18 | servo bus TX (330 Ω) / RX — Serial1 @ 1 Mbps |
 | 4 | 16 / 15 | button / spare |
 | 5 | 11 / 10 | foot switch L / R (pull-up, closed = LOW) |

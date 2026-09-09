@@ -2,7 +2,8 @@
 
 Recreating the Hugging Face / Pollen Robotics **Microduck** (25 cm RL biped, launched
 2026-08-27) on the **Atech** modular electronics platform. Concept, reference geometry,
-firmware. See `DESIGN.md` for the brief and the decisions, `BOM.md` for parts.
+firmware. See `DESIGN.md` for the brief and the decisions, `BOM.md` for parts, `WIRING.md` for
+the Atech modules, ports and cables.
 
 ![lineup](docs/img/reference_lineup.png)
 
@@ -11,6 +12,7 @@ firmware. See `DESIGN.md` for the brief and the decisions, `BOM.md` for parts.
 ```
 DESIGN.md                 the brief: what the Microduck is, routes, recommended concept, plan, questions
 BOM.md                    parts and prices
+WIRING.md                 Atech modules, ports, servo chain, power, head cable, bring-up order
 reference/                upstream repos (gitignored; scripts/fetch_reference.sh) + reference/README.md
 scripts/assemble_mjcf.py  pose an MJCF robot -> out/<name>.stl/.glb + docs/anatomy_<name>.md
 scripts/render_reference.py  docs/img/reference_lineup.png
@@ -20,6 +22,7 @@ scripts/replay_hires.py   forward kinematics of the recorded run on the full-res
 scripts/build_motion_page.py  -> docs/motion_page.html (interactive 3D replay of the high-res assembly)
 scripts/duck_controller.py  policy controller factory for `partsmith motion atech_duck`
 docs/motion_sim.md        simulation results
+docs/motion_page.html     interactive 3D replay (open in a browser; duck / CAD / grey colour schemes)
 firmware/                 PlatformIO project for the Atech 14-port board (ESP32-S3)
   src/duck_config.h       joint table (ODM v2 order, bus IDs, init pose), loop constants
   src/duck_bus.*          Feetech STS bus driver for N servos (SYNC READ / SYNC WRITE)
@@ -54,3 +57,10 @@ cd firmware && pio run            # build; pio run -t upload once a board is on 
 - Firmware: compiles for both envs (`atech_duck`, `atech_duck_bare`). Not flashed — no
   board or servo was connected. `BENCH` on a real board is the first measurement.
 - Nothing printed or ordered. Gustav's decisions: `DESIGN.md` §8.
+
+## Third-party content
+
+- `firmware/lib/athera_modules/` — Atech module drivers (subset of the Atech firmware library, copied 2026-09-02).
+- `firmware/src/policy_weights.h` — exported from `BEST_WALK_ONNX_2.onnx`, Open Duck Mini v2 (Apache-2.0).
+- The Open Duck Mini v2 body, meshes and runtime contract are Apache-2.0 (apirrone/Open_Duck_Mini).
+- Microduck meshes (Pollen Robotics, CC BY-NC-SA 4.0) are not in this repo; `docs/img/` shows renders of them for reference only. `scripts/fetch_reference.sh` re-downloads the upstream repos.
