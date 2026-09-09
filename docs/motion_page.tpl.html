@@ -142,12 +142,14 @@ function applyTheme(){
   gridMat.color = hexOf('--grid'); gridMat.opacity = 0.6; gridMat.transparent = true;
   if (typeof applyColours === 'function') applyColours();
 }
+const b64 = s => { const bin = atob(s), u = new Uint8Array(bin.length); for (let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); return u; };
 const bodyMeshes = {};
 for (const name in meshes){
   const md = meshes[name];
   const g = new THREE.BufferGeometry();
-  g.setAttribute('position', new THREE.Float32BufferAttribute(md.v, 3));
-  g.setIndex(md.f);
+  const verts = new Float32Array(b64(md.vb).buffer), idx = md.f16 ? new Uint16Array(b64(md.fb).buffer) : new Uint32Array(b64(md.fb).buffer);
+  g.setAttribute('position', new THREE.BufferAttribute(verts, 3));
+  g.setIndex(new THREE.BufferAttribute(idx, 1));
   g.computeVertexNormals();
   let role='duck', mats=[];
   if (name==='atech_board'){
@@ -156,10 +158,10 @@ for (const name in meshes){
     role = (name.indexOf('head')>=0 || name.indexOf('neck')>=0) ? 'head' : 'duck';
     // Faces arrive in part order with one CAD colour per face; group consecutive faces by colour
     // so every part gets its own material (duck / CAD / grey schemes below).
-    const nf = md.f.length/3, groups=[]; let key=null;
+    const pk = b64(md.pb), nf = idx.length/3, groups=[]; let key=-1;
     for (let i=0;i<nf;i++){
-      const k = md.c.length ? md.c[i*3]+','+md.c[i*3+1]+','+md.c[i*3+2] : 'x';
-      if (k!==key){ key=k; groups.push({key:k, start:i*3, count:0}); }
+      const k = pk[i];
+      if (k!==key){ key=k; groups.push({key:md.keys[k], start:i*3, count:0}); }
       groups[groups.length-1].count += 3;
     }
     groups.forEach((gr,i)=>{ g.addGroup(gr.start, gr.count, i);

@@ -11,14 +11,18 @@ the Atech modules, ports and cables.
 
 ```
 DESIGN.md                 the brief: what the Microduck is, routes, recommended concept, plan, questions
-BOM.md                    parts and prices
+BOM.md                    parts and prices; mechanical section generated from the CAD
+cad/                      atech_duck_stand.glb (posed, full resolution, duck colours) + BOM.csv
 WIRING.md                 Atech modules, ports, servo chain, power, head cable, bring-up order
 reference/                upstream repos (gitignored; scripts/fetch_reference.sh) + reference/README.md
 scripts/assemble_mjcf.py  pose an MJCF robot -> out/<name>.stl/.glb + docs/anatomy_<name>.md
 scripts/render_reference.py  docs/img/reference_lineup.png
 docs/anatomy_*.md         joints, link lengths, masses of both reference ducks
 scripts/sim_walk.py       headless MuJoCo run of the ODM v2 walking policy (stock / +Atech board) -> out/motion/*.json
-scripts/replay_hires.py   forward kinematics of the recorded run on the full-resolution part export (+ decimated meshes)
+scripts/duck_parts.py     shared loader: every part of the ODM v2 high-res export + the Atech board, colours, kinds
+scripts/replay_hires.py   forward kinematics of the recorded run on the full-resolution part export (+ full-res meshes, binary)
+scripts/export_cad.py     -> cad/atech_duck_stand.glb (posed CAD, one node per part) + out/atech_duck_stand.stl
+scripts/build_bom.py      -> cad/BOM.csv + the generated mechanical section of BOM.md
 scripts/build_motion_page.py  -> docs/motion_page.html (interactive 3D replay of the high-res assembly)
 scripts/duck_controller.py  policy controller factory for `partsmith motion atech_duck`
 docs/motion_sim.md        simulation results
@@ -47,7 +51,15 @@ scripts/fetch_reference.sh                                   # ~350 MB of upstre
 cd firmware && pio run            # build; pio run -t upload once a board is on USB
 ```
 
-## Status (2026-09-02)
+## CAD
+
+`cad/atech_duck_stand.glb` is the Open Duck Mini v2 assembly at full part resolution (357 k
+faces, 87 parts, no decimation) in the STAND pose, with the Pi Zero and BNO055 removed and the
+Atech 14-port board in the trunk. The earlier `out/open_duck_mini_v2.stl` came from the
+Playground model's convex hulls and is only good for physics. The servo bodies are not in the
+upstream visual export, so the CAD shows horns, sheets and shells but no STS3215 housings.
+
+## Status (2026-09-02, CAD + BOM 2026-09-09)
 
 - Reference: fetched, posed, measured. No public 3D scan exists; the official simulation
   meshes are the geometry (CC BY-NC-SA). Open Duck Mini v2 (Apache-2.0) is the open body
