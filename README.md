@@ -23,6 +23,7 @@ scripts/duck_parts.py     shared loader: every part of the ODM v2 high-res expor
 scripts/replay_hires.py   forward kinematics of the recorded run on the full-resolution part export (+ full-res meshes, binary)
 scripts/export_cad.py     -> cad/atech_duck_stand.glb (posed CAD, one node per part) + out/atech_duck_stand.stl
 scripts/build_bom.py      -> cad/BOM.csv + the generated mechanical section of BOM.md
+scripts/build_cad_page.py -> docs/cad_page.html (self-contained 3D viewer of the posed CAD with the part list)
 scripts/build_motion_page.py  -> docs/motion_page.html (interactive 3D replay of the high-res assembly)
 scripts/duck_controller.py  policy controller factory for `partsmith motion atech_duck`
 docs/motion_sim.md        simulation results
